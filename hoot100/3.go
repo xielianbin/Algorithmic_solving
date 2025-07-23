@@ -13,19 +13,15 @@ func lengthOfLongestSubstring(s string) int {
 	arr := []byte{}
 
 	for _, v := range bs {
-		ff := false
-		for _, a := range arr {
+		ff := -1
+		for ai, a := range arr {
 			if a == v {
-				ff = true
+				ff = ai
 			}
 		}
-		count := 0
-		for n := range arr {
-			if arr[n] {
-				count++
-			}
-		}
-		maxn = max(maxn, count)
+		arr = append(arr[ff+1:], v)
+
+		maxn = max(maxn, len(arr))
 	}
 	return maxn
 }
@@ -33,8 +29,8 @@ func main() {
 	//nums := []int{0, 1, 0, 3, 12}
 	//nums := "abcabcbb"
 	//nums := "au"
-	nums := "aab"
-	//nums := "abba"
+	//nums := "aab"
+	nums := "abba"
 	//nums := "pwwkew"
 	//nums := []int{100, 4, 200, 1, 3, 2}
 

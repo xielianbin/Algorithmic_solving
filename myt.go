@@ -2,32 +2,28 @@ package main
 
 import (
 	"fmt"
-	"sort"
+	"strconv"
+	"sync"
 )
 
-func merge(intervals [][]int) [][]int {
-	sort.Slice(intervals, func(i, j int) bool {
-		return intervals[i][0] < intervals[j][0]
-	})
-	newIntervals := make([][]int, 0)
-	newIntervals = append(newIntervals, intervals[0])
-	for i := 0; i < len(intervals); i++ {
-		m := len(newIntervals) - 1
-		if intervals[i][0] <= newIntervals[m][1] {
-			if newIntervals[m][1] < intervals[i][1] {
-				newIntervals[m][1] = intervals[i][1]
-			}
+var dog = make(chan string)
+var cat = make(chan string)
+var fish = make(chan string)
+var wg sync.WaitGroup
 
-		} else {
-			newIntervals = append(newIntervals, intervals[i])
-		}
-	}
-	return newIntervals
+func Dog() {
+	var d string
+	d = <-dog
+	fmt.Println(d)
+	defer wg.Done()
 }
 func main() {
-	intervals := [][]int{
-		{1, 3}, {2, 6}, {15, 18}, {8, 10},
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		d := "dog" + strconv.Itoa(i+1)
+		go Dog()
+		dog <- d
 	}
-	intervals = merge(intervals)
-	fmt.Println(intervals)
+	wg.Wait()
+	close(dog)
 }
